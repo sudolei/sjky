@@ -12,16 +12,15 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-import org.isky.util.AlertUtil;
-import org.isky.util.FileUtil;
-import org.isky.util.PdfMakeUtil;
-import org.isky.util.StringUtils;
+import org.isky.util.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class HelloController {
@@ -45,6 +44,18 @@ public class HelloController {
 
     @FXML
     private Label createFolderLabel;
+
+    @FXML
+    private Button selFolderBtn;
+
+    @FXML
+    private Button subBtn;
+
+    @FXML
+    private Label twoFolderLabel;
+
+    @FXML
+    private ListView<String> folderListView;
 
     @FXML
     protected void onHelloButtonClick() {
@@ -157,5 +168,62 @@ public class HelloController {
     @FXML
     protected void clearBtnClick() {
         imgListView.getItems().clear();
+    }
+
+
+    /**
+     * 多文件
+     */
+
+    @FXML
+    protected void selFolderClick() {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("选择文件夹");
+        Stage stage = (Stage) selFolderBtn.getScene().getWindow();
+        File selectedDirectory = directoryChooser.showDialog(stage);
+        if (selectedDirectory != null) {
+            String folderPath = selectedDirectory.getAbsolutePath();
+            // 可以在这里处理选择的文件夹
+            twoFolderLabel.setText(folderPath);
+
+            List<String> list = FileUtil.readFolders(folderPath);
+            ObservableList<String> folderList = FXCollections.observableArrayList(list);
+            folderListView.setItems(folderList);
+        }
+    }
+
+    @FXML
+    protected void subBtnClick() {
+        ObservableList<String> folderList = folderListView.getItems();
+        if (folderList == null || folderList.size() <= 0) {
+            AlertUtil.showWarningAlert("没有找到源文件");
+            return;
+        }
+        List<Map<String, Object>> noWaterList = new ArrayList<>();
+        for (String folder : folderList) {
+            List<String> images = FileUtil.getJpgFiles(folder);
+            File imgFile = new File(images.get(0));
+            String thisFolder = imgFile.getParent();
+            Map<String, Object> hcPath = PdfUtils.hc(images, thisFolder);
+            noWaterList.add(hcPath);
+        }
+
+
+        try {
+            Thread.sleep(2000);
+            for (Map<String, Object> s : noWaterList) {
+                String fileName = s.get("fileName").toString();
+                double width = (double) s.get("width");
+                double height = (double) s.get("height");
+
+                Path path = Paths.get(fileName);
+                String firstLevelDirectory = path.getName(1).toString();
+                //订单号
+                String orderNo = firstLevelDirectory.split("-")[0];
+                PdfMakeUtil.makeText(fileName, path.getParent() + File.separator + orderNo + ".pdf", "C:\\Windows\\Fonts\\simhei.ttf", 1, orderNo, (int) (width - 100 - 100), 100);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

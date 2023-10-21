@@ -36,6 +36,39 @@ public class FileUtil {
         return pdfFiles;
     }
 
+    public static List<String> getJpgFiles(String folderPath) {
+        List<String> jpgFiles = new ArrayList<String>();
+        File folder = new File(folderPath);
+        File[] files = folder.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                jpgFiles.addAll(getJpgFiles(file.getAbsolutePath()));
+            } else {
+                String fileName = file.getName();
+                if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") || fileName.endsWith(".png")) {
+                    jpgFiles.add(file.getAbsolutePath());
+                }
+            }
+        }
+        return jpgFiles;
+    }
+
+    public static List<String> readFolders(String folderPath) {
+
+        List<String> folderList = new ArrayList<>();
+        File folder = new File(folderPath);
+        File[] files = folder.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    String fileName = file.getName();
+                    folderList.add(folderPath + File.separator + fileName);
+                }
+            }
+        }
+        return folderList;
+    }
+
 
     public static List<String> readBmPDFFiles(String folderPath) {
         List<String> pdfFiles = new ArrayList<>();
