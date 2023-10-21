@@ -8,6 +8,7 @@ module com.qiang.century {
     requires mvel2;
     requires itextpdf;
     requires jai.imageio.core;
+    requires commons.io;
     opens org.isky to javafx.fxml;
     exports org.isky;
 }

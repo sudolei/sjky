@@ -1,18 +1,28 @@
 package org.isky;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfWriter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import org.isky.util.AlertUtil;
 import org.isky.util.FileUtil;
+import org.isky.util.PdfMakeUtil;
+import org.isky.util.StringUtils;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 public class HelloController {
     @FXML
@@ -26,6 +36,15 @@ public class HelloController {
 
     @FXML
     private ListView<String> imgListView;
+
+    @FXML
+    private Button clearBtn;
+
+    @FXML
+    private Button selCreateFolderBtn;
+
+    @FXML
+    private Label createFolderLabel;
 
     @FXML
     protected void onHelloButtonClick() {
@@ -48,6 +67,95 @@ public class HelloController {
 
     @FXML
     protected void hcPdtClick() {
-        AlertUtil.showWarningAlert("111");
+
+        String createFolder = createFolderLabel.getText();
+        if (StringUtils.isBlank(createFolder)) {
+            AlertUtil.showWarningAlert("请先选择生成文件目录");
+            return;
+        }
+
+        String jpgFolder = jpgFolderLabel.getText();
+        Path path = Paths.get(jpgFolder);
+        String firstLevelDirectory = path.getName(1).toString();
+        //订单号
+        String orderNo = firstLevelDirectory.split("-")[0];
+
+
+        ObservableList<String> images = imgListView.getItems();
+        String firstFile = images.get(0);
+        Image image = new Image(firstFile);
+        double width = image.getWidth();
+        double height = image.getHeight();
+        Document document = null;
+        String lsFileName = createFolder + File.separator + "no_water_" + System.currentTimeMillis() + ".pdf";
+        try {
+            document = new Document();
+
+            // 设置页面大小和边距
+            Rectangle rect = new Rectangle(0, 0, (float) width, (float) height);
+            document.setPageSize(rect);
+            document.setMargins(0, 0, 0, 0);
+
+            // 使用PdfWriter将文档对象写入PDF文件
+            PdfWriter.getInstance(document, new FileOutputStream(lsFileName));
+            document.open();
+
+            // 使用Image类读入jpg文件，并添加到PDF文档中
+            for (String str : images) {
+                com.itextpdf.text.Image i = com.itextpdf.text.Image.getInstance(str);
+                document.add(i);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 关闭文档对象，生成PDF文件
+            document.close();
+        }
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        AlertUtil.showSuccessAlert("已合成,请查看对应文件夹");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                    System.gc();
+                    PdfMakeUtil.makeText(lsFileName, createFolder + File.separator + orderNo + ".pdf", "C:\\Windows\\Fonts\\simhei.ttf", 1, orderNo, 100, 100);
+                    Thread.sleep(4000);
+                    System.gc();
+                    File delFile = new File(lsFileName);
+                    if (delFile.delete()) {
+                        System.out.println("文件删除成功");
+                    } else {
+                        System.out.println("文件删除失败");
+                    }
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+    }
+
+    @FXML
+    protected void selCreateFolderClick() {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("选择文件夹");
+        Stage stage = (Stage) selCreateFolderBtn.getScene().getWindow();
+        File selectedDirectory = directoryChooser.showDialog(stage);
+        if (selectedDirectory != null) {
+            String folderPath = selectedDirectory.getAbsolutePath();
+            // 可以在这里处理选择的文件夹
+            createFolderLabel.setText(folderPath);
+        }
+    }
+
+    @FXML
+    protected void clearBtnClick() {
+        imgListView.getItems().clear();
     }
 }

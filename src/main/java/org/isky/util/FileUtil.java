@@ -27,7 +27,7 @@ public class FileUtil {
                         String pdfFileName = fileName.toUpperCase();
                         int count = MyUtil.getPdfCount(pdfFileName);
                         if (count > 0) {
-                            pdfFiles.add(fileName);
+                            pdfFiles.add(folderPath + File.separator + fileName);
                         }
                     }
                 }
