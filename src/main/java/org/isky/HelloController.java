@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -40,12 +41,6 @@ public class HelloController {
     private Button clearBtn;
 
     @FXML
-    private Button selCreateFolderBtn;
-
-    @FXML
-    private Label createFolderLabel;
-
-    @FXML
     private Button selFolderBtn;
 
     @FXML
@@ -56,6 +51,19 @@ public class HelloController {
 
     @FXML
     private ListView<String> folderListView;
+
+
+    @FXML
+    private TextField xLocal;
+
+    @FXML
+    private TextField yLocal;
+
+    @FXML
+    private TextField xLocation;
+
+    @FXML
+    private TextField yLocation;
 
     @FXML
     protected void onHelloButtonClick() {
@@ -78,13 +86,8 @@ public class HelloController {
 
     @FXML
     protected void hcPdtClick() {
-
-        String createFolder = createFolderLabel.getText();
-        if (StringUtils.isBlank(createFolder)) {
-            AlertUtil.showWarningAlert("请先选择生成文件目录");
-            return;
-        }
-
+        int x = Integer.parseInt(xLocation.getText());
+        int y = Integer.parseInt(yLocation.getText());
         String jpgFolder = jpgFolderLabel.getText();
         Path path = Paths.get(jpgFolder);
         String firstLevelDirectory = path.getName(1).toString();
@@ -97,6 +100,10 @@ public class HelloController {
         Image image = new Image(firstFile);
         double width = image.getWidth();
         double height = image.getHeight();
+
+        File fmFile = new File(firstFile);
+        String createFolder = fmFile.getParent();
+
         Document document = null;
         String lsFileName = createFolder + File.separator + "no_water_" + System.currentTimeMillis() + ".pdf";
         try {
@@ -136,7 +143,7 @@ public class HelloController {
                 try {
                     Thread.sleep(1000);
                     System.gc();
-                    PdfMakeUtil.makeText(lsFileName, createFolder + File.separator + orderNo + ".pdf", "C:\\Windows\\Fonts\\simhei.ttf", 1, orderNo, 100, 100);
+                    PdfMakeUtil.makeText(lsFileName, createFolder + File.separator + orderNo + ".pdf", "C:\\Windows\\Fonts\\simhei.ttf", 1, orderNo, (int) (width - x - 100), y);
                     Thread.sleep(4000);
                     System.gc();
                     File delFile = new File(lsFileName);
@@ -152,18 +159,6 @@ public class HelloController {
         }).start();
     }
 
-    @FXML
-    protected void selCreateFolderClick() {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("选择文件夹");
-        Stage stage = (Stage) selCreateFolderBtn.getScene().getWindow();
-        File selectedDirectory = directoryChooser.showDialog(stage);
-        if (selectedDirectory != null) {
-            String folderPath = selectedDirectory.getAbsolutePath();
-            // 可以在这里处理选择的文件夹
-            createFolderLabel.setText(folderPath);
-        }
-    }
 
     @FXML
     protected void clearBtnClick() {
@@ -194,6 +189,14 @@ public class HelloController {
 
     @FXML
     protected void subBtnClick() {
+        int x = 100;
+        int y = 100;
+        if (StringUtils.isNotEmpty(xLocal.getText())) {
+            x = Integer.parseInt(xLocal.getText());
+        }
+        if (StringUtils.isNotEmpty(yLocal.getText())) {
+            y = Integer.parseInt(yLocal.getText());
+        }
         ObservableList<String> folderList = folderListView.getItems();
         if (folderList == null || folderList.size() <= 0) {
             AlertUtil.showWarningAlert("没有找到源文件");
@@ -214,13 +217,11 @@ public class HelloController {
             for (Map<String, Object> s : noWaterList) {
                 String fileName = s.get("fileName").toString();
                 double width = (double) s.get("width");
-                double height = (double) s.get("height");
-
                 Path path = Paths.get(fileName);
                 String firstLevelDirectory = path.getName(1).toString();
                 //订单号
                 String orderNo = firstLevelDirectory.split("-")[0];
-                PdfMakeUtil.makeText(fileName, path.getParent() + File.separator + orderNo + ".pdf", "C:\\Windows\\Fonts\\simhei.ttf", 1, orderNo, (int) (width - 100 - 100), 100);
+                PdfMakeUtil.makeText(fileName, path.getParent() + File.separator + orderNo + ".pdf", "C:\\Windows\\Fonts\\simhei.ttf", 1, orderNo, (int) (width - x - 100), y);
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
