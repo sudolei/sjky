@@ -19,10 +19,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class HelloController {
     @FXML
@@ -64,6 +62,15 @@ public class HelloController {
 
     @FXML
     private TextField yLocation;
+
+    @FXML
+    private Button folderBtn;
+
+    @FXML
+    private Label pdfHbLabel;
+
+    @FXML
+    private Button endHcBtn;
 
     @FXML
     protected void onHelloButtonClick() {
@@ -218,13 +225,61 @@ public class HelloController {
                 String fileName = s.get("fileName").toString();
                 double width = (double) s.get("width");
                 Path path = Paths.get(fileName);
+                String createPath = path.getRoot() + "世纪开源PDF";
+                File createFolder = new File(createPath);
+                if (createFolder.exists()) {
+                    if (!createFolder.isDirectory()) {
+                        createFolder.mkdir();
+                    }
+                } else {
+                    createFolder.mkdir();
+                }
+
+
                 String firstLevelDirectory = path.getName(1).toString();
                 //订单号
+                String pdfName = firstLevelDirectory.split(";")[0];
                 String orderNo = firstLevelDirectory.split("-")[0];
-                PdfMakeUtil.makeText(fileName, path.getParent() + File.separator + orderNo + ".pdf", "C:\\Windows\\Fonts\\simhei.ttf", 1, orderNo, (int) (width - x - 100), y);
+                PdfMakeUtil.makeText(fileName, createPath + File.separator + pdfName + ".pdf", "C:\\Windows\\Fonts\\simhei.ttf", 1, orderNo, (int) (width - x - 100), y);
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    protected void folderBtnClick() {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("选择文件夹");
+        Stage stage = (Stage) folderBtn.getScene().getWindow();
+        File selectedDirectory = directoryChooser.showDialog(stage);
+        if (selectedDirectory != null) {
+            String folderPath = selectedDirectory.getAbsolutePath();
+            // 可以在这里处理选择的文件夹
+            pdfHbLabel.setText(folderPath);
+
+
+            List<String> list = FileUtil.readFolders(folderPath);
+            ObservableList<String> folderList = FXCollections.observableArrayList(list);
+            endFolderListView.setItems(folderList);
+        }
+    }
+
+    @FXML
+    private ListView<String> endFolderListView;
+
+    @FXML
+    protected void endHcBtnClick() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        ObservableList<String> observableList = endFolderListView.getItems();
+        for (String folder : observableList) {
+            List<String> l = FileUtil.readPdfFiles(folder);
+            if (l != null && l.size() > 0) {
+                String[] newFiles = new String[l.size()];
+                l.toArray(newFiles);
+                String resultPdf = folder + File.separator + sdf.format(new Date()) + ".pdf";
+                PdfMerger.mergePdf(newFiles, resultPdf);
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ module com.qiang.century {
     requires org.kordamp.bootstrapfx.core;
     requires mvel2;
     requires itextpdf;
+    requires batik.awt.util;
     requires jai.imageio.core;
     requires commons.io;
     opens org.isky to javafx.fxml;
