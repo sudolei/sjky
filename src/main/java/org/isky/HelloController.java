@@ -107,7 +107,8 @@ public class HelloController {
         Image image = new Image(firstFile);
         double width = image.getWidth();
         double height = image.getHeight();
-
+        System.out.println(width);
+        System.out.println(height);
         File fmFile = new File(firstFile);
         String createFolder = fmFile.getParent();
 
@@ -128,6 +129,8 @@ public class HelloController {
             // 使用Image类读入jpg文件，并添加到PDF文档中
             for (String str : images) {
                 com.itextpdf.text.Image i = com.itextpdf.text.Image.getInstance(str);
+                i.setDpi(72, 72);
+                i.scalePercent(100, 100);
                 document.add(i);
             }
 
@@ -279,6 +282,20 @@ public class HelloController {
                 l.toArray(newFiles);
                 String resultPdf = folder + File.separator + sdf.format(new Date()) + ".pdf";
                 PdfMerger.mergePdf(newFiles, resultPdf);
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+                String reToFolder = folder + File.separator + "111";
+                File f = new File(reToFolder);
+                if (!f.exists()) {
+                    f.mkdir();
+                }
+
+
             }
         }
     }
