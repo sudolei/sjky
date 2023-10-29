@@ -17,6 +17,7 @@ import org.isky.util.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -107,40 +108,15 @@ public class HelloController {
         Image image = new Image(firstFile);
         double width = image.getWidth();
         double height = image.getHeight();
+        // 如果图片是300dpi,需要把宽高改成72DPI的宽高
+        double w = new BigDecimal(width).doubleValue() * 72 / 300;
+        double h = new BigDecimal(height).doubleValue() * 72 / 300;
         System.out.println(width);
         System.out.println(height);
         File fmFile = new File(firstFile);
         String createFolder = fmFile.getParent();
-
-        Document document = null;
         String lsFileName = createFolder + File.separator + "no_water_" + System.currentTimeMillis() + ".pdf";
-        try {
-            document = new Document();
-
-            // 设置页面大小和边距
-            Rectangle rect = new Rectangle(0, 0, (float) width, (float) height);
-            document.setPageSize(rect);
-            document.setMargins(0, 0, 0, 0);
-
-            // 使用PdfWriter将文档对象写入PDF文件
-            PdfWriter.getInstance(document, new FileOutputStream(lsFileName));
-            document.open();
-
-            // 使用Image类读入jpg文件，并添加到PDF文档中
-            for (String str : images) {
-                com.itextpdf.text.Image i = com.itextpdf.text.Image.getInstance(str);
-                i.setDpi(72, 72);
-                i.scalePercent(100, 100);
-                document.add(i);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            // 关闭文档对象，生成PDF文件
-            document.close();
-        }
-
+        PoxPdfUtil.magerPdf(images, lsFileName, (float) w, (float) h);
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -217,7 +193,7 @@ public class HelloController {
             List<String> images = FileUtil.getJpgFiles(folder);
             File imgFile = new File(images.get(0));
             String thisFolder = imgFile.getParent();
-            Map<String, Object> hcPath = PdfUtils.hc(images, thisFolder);
+            Map<String, Object> hcPath = PdfUtils.boxHc(images, thisFolder);
             noWaterList.add(hcPath);
         }
 

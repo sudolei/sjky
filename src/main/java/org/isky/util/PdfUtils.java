@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,24 +20,47 @@ import java.util.Map;
  */
 public class PdfUtils {
 
-    public static Map<String,Object> hc(List<String> images, String createFolder) {
-        Map<String,Object> result = new HashMap<>();
+
+    public static Map<String, Object> boxHc(List<String> images, String createFolder) {
+        Map<String, Object> result = new HashMap<>();
 
         String firstFile = images.get(0);
         Image image = new Image(firstFile);
         double width = image.getWidth();
         double height = image.getHeight();
+
+        double w = new BigDecimal(width).doubleValue() * 72 / 300;
+        double h = new BigDecimal(height).doubleValue() * 72 / 300;
+        String lsFileName = createFolder + File.separator + "no_water_" + System.currentTimeMillis() + ".pdf";
+        PoxPdfUtil.magerPdf(images, lsFileName, (float) w, (float) h);
+
+        result.put("fileName", lsFileName);
+        result.put("width", width);
+        result.put("height", height);
+        return result;
+    }
+
+    public static Map<String, Object> hc(List<String> images, String createFolder) {
+        Map<String, Object> result = new HashMap<>();
+
+        String firstFile = images.get(0);
+        Image image = new Image(firstFile);
+        double width = image.getWidth();
+        double height = image.getHeight();
+
+        double w = new BigDecimal(width).doubleValue() * 72 / 300;
+        double h = new BigDecimal(height).doubleValue() * 72 / 300;
         Document document = null;
         String lsFileName = createFolder + File.separator + "no_water_" + System.currentTimeMillis() + ".pdf";
 
-        result.put("fileName",lsFileName);
-        result.put("width",width);
-        result.put("height",height);
+        result.put("fileName", lsFileName);
+        result.put("width", width);
+        result.put("height", height);
         try {
             document = new Document();
 
             // 设置页面大小和边距
-            Rectangle rect = new Rectangle(0, 0, (float) width, (float) height);
+            Rectangle rect = new Rectangle(0, 0, (float) w, (float) h);
             document.setPageSize(rect);
             document.setMargins(0, 0, 0, 0);
 

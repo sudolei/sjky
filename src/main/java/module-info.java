@@ -10,6 +10,7 @@ module com.qiang.century {
     requires batik.awt.util;
     requires jai.imageio.core;
     requires commons.io;
+    requires org.apache.pdfbox;
     opens org.isky to javafx.fxml;
     exports org.isky;
 }
