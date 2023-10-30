@@ -28,11 +28,11 @@
                                 <Button fx:id="subBtn" layoutX="345.0" layoutY="544.0" mnemonicParsing="false"
                                         onAction="#subBtnClick" prefHeight="35.0" prefWidth="129.0"
                                         style="-fx-background-color: green;" text="开始合成" textFill="#f2eeee"/>
-                                <TextField layoutX="214.0" layoutY="165.0" text="100" fx:id="xLocal"/>
+                                <TextField layoutX="214.0" layoutY="165.0" text="10" fx:id="xLocal"/>
                                 <Label layoutX="112.0" layoutY="164.0" prefHeight="25.0" prefWidth="83.0"
                                        text="文字X坐标："/>
                                 <Label layoutX="429.0" layoutY="169.0" text="文字Y坐标："/>
-                                <TextField fx:id="yLocal" layoutX="513.0" layoutY="165.0" text="100"/>
+                                <TextField fx:id="yLocal" layoutX="513.0" layoutY="165.0" text="10"/>
                             </children>
                         </AnchorPane>
                     </content>
@@ -79,8 +79,8 @@
                                                text="文字X坐标："/>
                                         <Label layoutX="411.0" layoutY="163.0" prefHeight="30.0" prefWidth="68.0"
                                                text="文字Y坐标："/>
-                                        <TextField layoutX="179.0" layoutY="167.0" text="100" fx:id="xLocation"/>
-                                        <TextField fx:id="yLocation" layoutX="510.0" layoutY="167.0" text="100"/>
+                                        <TextField layoutX="179.0" layoutY="167.0" text="10" fx:id="xLocation"/>
+                                        <TextField fx:id="yLocation" layoutX="510.0" layoutY="167.0" text="10"/>
                                     </children>
                                 </Pane>
                             </children>

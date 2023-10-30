@@ -36,7 +36,7 @@ public class PdfMakeUtil {
                 BaseFont bf = BaseFont.createFont(fontFile, BaseFont.IDENTITY_H,
                         BaseFont.NOT_EMBEDDED);
                 cb.beginText();
-                cb.setFontAndSize(bf, 24);
+                cb.setFontAndSize(bf, 12);
                 cb.showTextAligned(PdfContentByte.ALIGN_LEFT, text, x, y, 0);
                 cb.endText();
             } catch (Exception e) {

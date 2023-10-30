@@ -129,7 +129,8 @@ public class HelloController {
                 try {
                     Thread.sleep(1000);
                     System.gc();
-                    PdfMakeUtil.makeText(lsFileName, createFolder + File.separator + orderNo + ".pdf", "C:\\Windows\\Fonts\\simhei.ttf", 1, orderNo, (int) (width - x - 100), y);
+//                    PdfMakeUtil.makeText(lsFileName, createFolder + File.separator + orderNo + ".pdf", "C:\\Windows\\Fonts\\simhei.ttf", 1, orderNo, (int) (width - x - 100), y);
+                    PdfMakeUtil.makeText(lsFileName, createFolder + File.separator + orderNo + ".pdf", "C:\\Windows\\Fonts\\simhei.ttf", 1, orderNo, (int) (width * 72 / 300 - x - 80), y);
                     Thread.sleep(4000);
                     System.gc();
                     File delFile = new File(lsFileName);
@@ -204,7 +205,7 @@ public class HelloController {
                 String fileName = s.get("fileName").toString();
                 double width = (double) s.get("width");
                 Path path = Paths.get(fileName);
-                String createPath = path.getRoot() + "世纪开源PDF";
+                String createPath = path.getRoot() + "世纪开元PDF";
                 File createFolder = new File(createPath);
                 if (createFolder.exists()) {
                     if (!createFolder.isDirectory()) {
@@ -219,7 +220,8 @@ public class HelloController {
                 //订单号
                 String pdfName = firstLevelDirectory.split(";")[0];
                 String orderNo = firstLevelDirectory.split("-")[0];
-                PdfMakeUtil.makeText(fileName, createPath + File.separator + pdfName + ".pdf", "C:\\Windows\\Fonts\\simhei.ttf", 1, orderNo, (int) (width - x - 100), y);
+//                PdfMakeUtil.makeText(fileName, createPath + File.separator + pdfName + ".pdf", "C:\\Windows\\Fonts\\simhei.ttf", 1, orderNo, (int) (width - x - 100), y);
+                PdfMakeUtil.makeText(fileName, createPath + File.separator + pdfName + ".pdf", "C:\\Windows\\Fonts\\simhei.ttf", 1, orderNo, (int) (width * 72 / 300 - x - 80), y);
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
