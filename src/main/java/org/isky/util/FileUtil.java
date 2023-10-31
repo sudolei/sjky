@@ -1,8 +1,11 @@
 package org.isky.util;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -147,4 +150,37 @@ public class FileUtil {
     }
 
 
+    public static String getSysVal() {
+        String os = System.getProperty("os.name");
+        String propertiesFile = null;
+        String folder = null;
+        if (os.startsWith("Windows")) {
+            String path = System.getProperty("user.home");
+            System.out.println("Windows系统路径：" + path);
+            propertiesFile = path + File.separator + "sys.properties";
+            File pzFile = new File(propertiesFile);
+            if (pzFile.exists()) {
+                folder = PropertiesUtil.getVal(propertiesFile);
+            }
+        }
+        return folder;
+    }
+
+    public static void setSysVal(String val) {
+        String os = System.getProperty("os.name");
+        if (os.startsWith("Windows")) {
+            String path = System.getProperty("user.home");
+            System.out.println("Windows系统路径：" + path);
+            String propertiesFile = path + File.separator + "sys.properties";
+            File pzFile = new File(propertiesFile);
+            if (!pzFile.exists()) {
+                try {
+                    pzFile.createNewFile();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            PropertiesUtil.setVal(propertiesFile,val);
+        }
+    }
 }

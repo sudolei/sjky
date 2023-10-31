@@ -12,12 +12,30 @@
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
     <children>
+        <MenuBar>
+            <menus>
+                <Menu mnemonicParsing="false" text="设置默认路径">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#setFolderPath" text="设  置"/>
+                        <MenuItem mnemonicParsing="false" onAction="#exitSjky" text="退  出"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="说明">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
         <TabPane prefHeight="658.0" prefWidth="791.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>
                 <Tab text="多文件选择">
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
+                                <Label fx:id="defFolder" layoutX="0.0" layoutY="0.0" prefHeight="31.0" prefWidth="82.0"
+                                       style="-fx-background-color: #008B8B;" text="" textAlignment="CENTER"
+                                       textFill="#f8f5f5" visible="false"/>
                                 <Button fx:id="selFolderBtn" layoutX="110.0" layoutY="71.0" mnemonicParsing="false"
                                         onAction="#selFolderClick" prefHeight="39.0" prefWidth="88.0"
                                         style="-fx-background-color: green;" text="选择文件夹：" textFill="#fcf8f8"/>
