@@ -237,14 +237,18 @@ public class HelloController {
                     createFolder.mkdir();
                 }
 
-
-                String firstLevelDirectory = path.getName(1).toString();
+                System.out.println(path.getNameCount());
+                String firstLevelDirectory = path.getName(path.getNameCount()-3).toString();
+                System.out.println(firstLevelDirectory);
                 //订单号
                 String pdfName = firstLevelDirectory.split(";")[0];
                 String orderNo = firstLevelDirectory.split("-")[0];
 //                PdfMakeUtil.makeText(fileName, createPath + File.separator + pdfName + ".pdf", "C:\\Windows\\Fonts\\simhei.ttf", 1, orderNo, (int) (width - x - 100), y);
                 PdfMakeUtil.makeText(fileName, createPath + File.separator + pdfName + ".pdf", "C:\\Windows\\Fonts\\simhei.ttf", 1, orderNo, (int) (width * 72 / 300 - x - 80), y);
             }
+
+            Thread.sleep(2000);
+            AlertUtil.showSuccessAlert("合成成功，PDF在本磁盘的 世纪开元PDF 文件夹");
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

@@ -30,7 +30,7 @@ public class PdfMakeUtil {
             PdfStamper pdfStamper = new PdfStamper(pdfReader, new FileOutputStream(resultPdf));
             PdfContentByte cb = pdfStamper.getOverContent(pageNum);
             try {
-                float[] colorArr = {0, 0, 0, 60};
+                float[] colorArr = {0, 0, 0, 0};
                 ExtendedColor baseColor = new CMYKColor(colorArr[0], colorArr[1], colorArr[2], colorArr[3]);
                 cb.setColorFill(baseColor);
                 BaseFont bf = BaseFont.createFont(fontFile, BaseFont.IDENTITY_H,
