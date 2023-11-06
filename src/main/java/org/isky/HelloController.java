@@ -315,7 +315,10 @@ public class HelloController {
         stage.setTitle("设置默认路径");
         stage.setWidth(300);
         stage.setHeight(200);
-
+        String sysVal = FileUtil.getSysVal();
+        if (!StringUtils.isEmpty(sysVal)) {
+            defFolder.setText(sysVal);
+        }
         // 创建文本标签
         TextField field = new TextField(defFolder.getText());
 
